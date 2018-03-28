@@ -2,6 +2,7 @@ package org.apereo.cas.support.pac4j.config.support.authentication;
 
 import com.github.scribejava.core.model.Verb;
 import com.nimbusds.jose.JWSAlgorithm;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.authentication.AuthenticationEventExecutionPlanConfigurer;
 import org.apereo.cas.authentication.AuthenticationHandler;
@@ -281,6 +282,19 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                     if (StringUtils.isNotBlank(saml.getNameIdPolicyFormat())) {
                         cfg.setNameIdPolicyFormat(saml.getNameIdPolicyFormat());
                     }
+                    if (!CollectionUtils.isEmpty(saml.getBlackListedSignatureSigningAlgorithms())) {
+                        cfg.setBlackListedSignatureSigningAlgorithms(saml.getBlackListedSignatureSigningAlgorithms());
+                    }
+                    if (!CollectionUtils.isEmpty(saml.getSignatureAlgorithms())) {
+                        cfg.setSignatureAlgorithms(saml.getSignatureAlgorithms());
+                    }
+                    if (!CollectionUtils.isEmpty(saml.getSignatureReferenceDigestMethods())) {
+                        cfg.setSignatureReferenceDigestMethods(saml.getSignatureReferenceDigestMethods());
+                    }
+                    if (StringUtils.isNotBlank(saml.getSignatureCanonicalizationAlgorithm())) {
+                        cfg.setSignatureCanonicalizationAlgorithm(saml.getSignatureCanonicalizationAlgorithm());
+                    }
+
                     final SAML2Client client = new SAML2Client(cfg);
 
                     final int count = index.intValue();
