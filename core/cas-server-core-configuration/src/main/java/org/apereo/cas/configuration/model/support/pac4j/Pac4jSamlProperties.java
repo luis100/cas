@@ -4,6 +4,7 @@ import org.apereo.cas.configuration.support.RequiredProperty;
 import org.apereo.cas.configuration.support.RequiresModule;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * This is {@link Pac4jSamlProperties}.
@@ -99,6 +100,28 @@ public class Pac4jSamlProperties implements Serializable {
      * NameID policy to request in the authentication requests.
      */
     private String nameIdPolicyFormat;
+
+    /**
+     * Blacklist of Signature method algorithm URIs.
+     */
+    private List<String> blackListedSignatureSigningAlgorithms;
+
+    /**
+     * Whitelist of Signature method algorithm URIs.
+     */
+    private List<String> signatureAlgorithms;
+
+    /**
+     * Digest method algorithm URIs.
+     */
+    private List<String> signatureReferenceDigestMethods;
+
+    /**
+     * Signature canonicalization algorithm URI.
+     */
+    private String signatureCanonicalizationAlgorithm;
+
+
     /**
      * Whether metadata should be marked to request sign assertions.
      */
@@ -112,6 +135,22 @@ public class Pac4jSamlProperties implements Serializable {
      * This attribute won't be sent with the request unless a positive value (including 0) is defined.
      */
     private int attributeConsumingServiceIndex;
+
+    /**
+     * Set the ProviderName tag on the AuthnRequest. If not defined a default value will be selected for you.
+     */
+    private String providerName;
+
+    /**
+     * Set a list of extensions to be added in to the AuthnRequest.
+     */
+    private List<Pac4jSamlExtensionProperties> authnRequestExtensions;
+
+    /**
+     * Use an attribute as the id instead of the nameId
+     */
+    private String attributeAsId;
+
 
     public String getDestinationBinding() {
         return destinationBinding;
@@ -167,6 +206,38 @@ public class Pac4jSamlProperties implements Serializable {
 
     public void setNameIdPolicyFormat(final String nameIdPolicyFormat) {
         this.nameIdPolicyFormat = nameIdPolicyFormat;
+    }
+
+    public List<String> getBlackListedSignatureSigningAlgorithms() {
+        return blackListedSignatureSigningAlgorithms;
+    }
+
+    public void setBlackListedSignatureSigningAlgorithms(List<String> blackListedSignatureSigningAlgorithms) {
+        this.blackListedSignatureSigningAlgorithms = blackListedSignatureSigningAlgorithms;
+    }
+
+    public List<String> getSignatureAlgorithms() {
+        return signatureAlgorithms;
+    }
+
+    public void setSignatureAlgorithms(List<String> signatureAlgorithms) {
+        this.signatureAlgorithms = signatureAlgorithms;
+    }
+
+    public List<String> getSignatureReferenceDigestMethods() {
+        return signatureReferenceDigestMethods;
+    }
+
+    public void setSignatureReferenceDigestMethods(List<String> signatureReferenceDigestMethods) {
+        this.signatureReferenceDigestMethods = signatureReferenceDigestMethods;
+    }
+
+    public String getSignatureCanonicalizationAlgorithm() {
+        return signatureCanonicalizationAlgorithm;
+    }
+
+    public void setSignatureCanonicalizationAlgorithm(String signatureCanonicalizationAlgorithm) {
+        this.signatureCanonicalizationAlgorithm = signatureCanonicalizationAlgorithm;
     }
 
     public boolean isWantsAssertionsSigned() {
@@ -247,6 +318,30 @@ public class Pac4jSamlProperties implements Serializable {
 
     public void setAttributeConsumingServiceIndex(final int attributeConsumingServiceIndex) {
         this.attributeConsumingServiceIndex = attributeConsumingServiceIndex;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public List<Pac4jSamlExtensionProperties> getAuthnRequestExtensions() {
+        return authnRequestExtensions;
+    }
+
+    public void setAuthnRequestExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions) {
+        this.authnRequestExtensions = authnRequestExtensions;
+    }
+
+    public String getAttributeAsId() {
+        return attributeAsId;
+    }
+
+    public void setAttributeAsId(String attributeAsId) {
+        this.attributeAsId = attributeAsId;
     }
 }
 
