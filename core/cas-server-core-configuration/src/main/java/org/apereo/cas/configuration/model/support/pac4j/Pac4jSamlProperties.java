@@ -136,6 +136,16 @@ public class Pac4jSamlProperties implements Serializable {
      */
     private int attributeConsumingServiceIndex;
 
+    /**
+     * Set the ProviderName tag on the AuthnRequest. If not defined a default value will be selected for you.
+     */
+    private String providerName;
+
+    /**
+     * Set a list of extensions to be added in to the AuthnRequest.
+     */
+    private List<Pac4jSamlExtensionProperties> authnRequestExtensions;
+
 
     public String getDestinationBinding() {
         return destinationBinding;
@@ -303,6 +313,22 @@ public class Pac4jSamlProperties implements Serializable {
 
     public void setAttributeConsumingServiceIndex(final int attributeConsumingServiceIndex) {
         this.attributeConsumingServiceIndex = attributeConsumingServiceIndex;
+    }
+
+    public String getProviderName() {
+        return providerName;
+    }
+
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
+    }
+
+    public List<Pac4jSamlExtensionProperties> getAuthnRequestExtensions() {
+        return authnRequestExtensions;
+    }
+
+    public void setAuthnRequestExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions) {
+        this.authnRequestExtensions = authnRequestExtensions;
     }
 }
 

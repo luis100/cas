@@ -12,10 +12,15 @@ import org.apereo.cas.authentication.principal.PrincipalFactory;
 import org.apereo.cas.authentication.principal.PrincipalResolver;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.pac4j.Pac4jProperties;
+import org.apereo.cas.configuration.model.support.pac4j.Pac4jSamlExtensionProperties;
 import org.apereo.cas.services.ServicesManager;
 import org.apereo.cas.support.pac4j.authentication.ClientAuthenticationMetaDataPopulator;
 import org.apereo.cas.support.pac4j.authentication.handler.support.ClientAuthenticationHandler;
 import org.apereo.cas.support.pac4j.web.flow.SAML2ClientLogoutAction;
+import org.opensaml.core.config.InitializationException;
+import org.opensaml.core.config.InitializationService;
+import org.opensaml.core.xml.schema.XSAny;
+import org.opensaml.core.xml.schema.impl.XSAnyBuilder;
 import org.pac4j.cas.client.CasClient;
 import org.pac4j.cas.config.CasConfiguration;
 import org.pac4j.cas.config.CasProtocol;
@@ -53,10 +58,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.webflow.execution.Action;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import javax.xml.namespace.QName;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -294,6 +297,12 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                     if (StringUtils.isNotBlank(saml.getSignatureCanonicalizationAlgorithm())) {
                         cfg.setSignatureCanonicalizationAlgorithm(saml.getSignatureCanonicalizationAlgorithm());
                     }
+                    if (StringUtils.isNotBlank(saml.getProviderName())) {
+                        cfg.setProviderName(saml.getProviderName());
+                    }
+                    if(saml.getAuthnRequestExtensions() != null) {
+                        cfg.setAuthnRequestExtensions(parseExtensions(saml.getAuthnRequestExtensions()));
+                    }
 
                     final SAML2Client client = new SAML2Client(cfg);
 
@@ -308,6 +317,43 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                     LOGGER.debug("Created client [{}]", client);
                     properties.add(client);
                 });
+    }
+
+    private List<XSAny> parseExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions) {
+        List<XSAny> ret = null;
+        // init
+        try {
+            InitializationService.initialize();
+            XSAnyBuilder xsAnyBuilder= new XSAnyBuilder();
+
+            ret = parseExtensions(authnRequestExtensions, xsAnyBuilder);
+        } catch (InitializationException e) {
+            LOGGER.error("Could not define AuthnRequest Extensions", e);
+        }
+        return ret;
+    }
+
+    private List<XSAny> parseExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions, XSAnyBuilder xsAnyBuilder) {
+        List<XSAny> ret = new ArrayList<>();
+        for (Pac4jSamlExtensionProperties extension: authnRequestExtensions) {
+            XSAny elem = xsAnyBuilder.buildObject(extension.getNamespaceURL(), extension.getName(), extension.getNamespaceURL());
+            if(extension.getAttributes() != null) {
+                for (Map.Entry<String, String> entry: extension.getAttributes().entrySet()) {
+                    String name = entry.getKey();
+                    String value = entry.getValue();
+                    elem.getUnknownAttributes().put(QName.valueOf(name), value);
+                }
+            }
+            if(extension.getElements() != null) {
+                elem.getUnknownXMLObjects().addAll(parseExtensions(extension.getElements()));
+            }
+            if(extension.getTextContent() != null) {
+                elem.setTextContent(extension.getTextContent());
+            }
+            ret.add(elem);
+        }
+        return ret;
+
     }
 
     private void configureOAuth20Client(final Collection<BaseClient> properties) {
