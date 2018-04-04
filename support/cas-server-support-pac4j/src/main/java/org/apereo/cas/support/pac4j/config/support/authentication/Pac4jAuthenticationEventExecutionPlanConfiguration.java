@@ -301,7 +301,7 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                         cfg.setProviderName(saml.getProviderName());
                     }
                     if(saml.getAuthnRequestExtensions() != null) {
-                        cfg.setAuthnRequestExtensions(parseExtensions(saml.getAuthnRequestExtensions()));
+                        cfg.setAuthnRequestExtensions(() -> parseExtensions(saml.getAuthnRequestExtensions()));
                     }
 
                     final SAML2Client client = new SAML2Client(cfg);
