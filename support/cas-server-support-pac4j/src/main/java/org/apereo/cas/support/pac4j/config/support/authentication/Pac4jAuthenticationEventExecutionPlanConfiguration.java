@@ -300,7 +300,7 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                     if (StringUtils.isNotBlank(saml.getProviderName())) {
                         cfg.setProviderName(saml.getProviderName());
                     }
-                    if(saml.getAuthnRequestExtensions() != null) {
+                    if (saml.getAuthnRequestExtensions() != null) {
                         cfg.setAuthnRequestExtensions(() -> parseExtensions(saml.getAuthnRequestExtensions()));
                     }
 
@@ -320,34 +320,24 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
     }
 
     private List<XSAny> parseExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions) {
-        List<XSAny> ret = null;
-        // init
-        try {
-            InitializationService.initialize();
-            XSAnyBuilder xsAnyBuilder= new XSAnyBuilder();
-
-            ret = parseExtensions(authnRequestExtensions, xsAnyBuilder);
-        } catch (InitializationException e) {
-            LOGGER.error("Could not define AuthnRequest Extensions", e);
-        }
-        return ret;
+        return parseExtensions(authnRequestExtensions, new XSAnyBuilder());
     }
 
     private List<XSAny> parseExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions, XSAnyBuilder xsAnyBuilder) {
         List<XSAny> ret = new ArrayList<>();
-        for (Pac4jSamlExtensionProperties extension: authnRequestExtensions) {
-            XSAny elem = xsAnyBuilder.buildObject(extension.getNamespaceURL(), extension.getName(), extension.getNamespaceURL());
-            if(extension.getAttributes() != null) {
-                for (Map.Entry<String, String> entry: extension.getAttributes().entrySet()) {
+        for (Pac4jSamlExtensionProperties extension : authnRequestExtensions) {
+            XSAny elem = xsAnyBuilder.buildObject(extension.getNamespaceURL(), extension.getName(), extension.getNamespacePrefix());
+            if (extension.getAttributes() != null) {
+                for (Map.Entry<String, String> entry : extension.getAttributes().entrySet()) {
                     String name = entry.getKey();
                     String value = entry.getValue();
                     elem.getUnknownAttributes().put(QName.valueOf(name), value);
                 }
             }
-            if(extension.getElements() != null) {
+            if (extension.getElements() != null) {
                 elem.getUnknownXMLObjects().addAll(parseExtensions(extension.getElements()));
             }
-            if(extension.getTextContent() != null) {
+            if (extension.getTextContent() != null) {
                 elem.setTextContent(extension.getTextContent());
             }
             ret.add(elem);
