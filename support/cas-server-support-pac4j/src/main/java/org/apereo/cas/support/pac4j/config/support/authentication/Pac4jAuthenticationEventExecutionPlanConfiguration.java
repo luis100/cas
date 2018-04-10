@@ -303,6 +303,10 @@ public class Pac4jAuthenticationEventExecutionPlanConfiguration {
                     if (saml.getAuthnRequestExtensions() != null) {
                         cfg.setAuthnRequestExtensions(() -> parseExtensions(saml.getAuthnRequestExtensions()));
                     }
+                    if (StringUtils.isNotBlank(saml.getAttributeAsId())) {
+                        cfg.setAttributeAsId(saml.getAttributeAsId());
+                    }
+
 
                     final SAML2Client client = new SAML2Client(cfg);
 

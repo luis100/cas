@@ -103,7 +103,7 @@ public class Pac4jSamlProperties implements Serializable {
 
     /**
      * Blacklist of Signature method algorithm URIs.
-     * */
+     */
     private List<String> blackListedSignatureSigningAlgorithms;
 
     /**
@@ -145,6 +145,11 @@ public class Pac4jSamlProperties implements Serializable {
      * Set a list of extensions to be added in to the AuthnRequest.
      */
     private List<Pac4jSamlExtensionProperties> authnRequestExtensions;
+
+    /**
+     * Use an attribute as the id instead of the nameId
+     */
+    private String attributeAsId;
 
 
     public String getDestinationBinding() {
@@ -329,6 +334,14 @@ public class Pac4jSamlProperties implements Serializable {
 
     public void setAuthnRequestExtensions(List<Pac4jSamlExtensionProperties> authnRequestExtensions) {
         this.authnRequestExtensions = authnRequestExtensions;
+    }
+
+    public String getAttributeAsId() {
+        return attributeAsId;
+    }
+
+    public void setAttributeAsId(String attributeAsId) {
+        this.attributeAsId = attributeAsId;
     }
 }
 
